@@ -28,42 +28,94 @@ export default function SignUp() {
     }));
   }
 
+  // function onSubmit(e) {
+  //   e.preventDefault();
+
+  //   const auth = getAuth();
+  //   createUserWithEmailAndPassword(auth, email, password)
+  //     .then((userCredential) => {
+  //       const user = userCredential.user;
+        
+
+  //       updateProfile(auth.currentUser, {
+  //         displayName: name
+  //       });
+
+  //       const formDataCopy = {...formData};
+  //       delete formDataCopy.password;
+  //       formDataCopy.timestamp = serverTimestamp();
+    
+  //       setDoc(doc(db, 'users', user.uid), formDataCopy)
+  //         .then(() => {     
+  //           // navigate('/');
+  //           toast.success('Sign up was successful.');
+  //           // console.log(user);      
+  //         })
+  //         .catch ((error) => {
+  //           toast.error("Error internal.");
+  //         });
+  //     })
+  //     .catch ((error) => {
+  //         toast.error("Something went wrong with the registration");
+  //     });
+  // }
+  
+  
   async function onSubmit(e) {
     e.preventDefault();
 
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-
-        updateProfile(auth.currentUser, {
-          displayName: name
-        });
-
-        const formDataCopy = {...formData};
-        delete formDataCopy.password;
-        formDataCopy.timestamp = serverTimestamp();
-        setDoc(doc(db, 'users', user.uid), formDataCopy);
-        navigate('/');
-        // toast.success('Sign up was successful.')
-        console.log(user);
-      })
-      .catch ((error) => {
-          toast.error("Something went wrong with the registration");
-      });
-
-    // try {
-    //   const auth = getAuth();
-    //   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    //   updateProfile(auth.currentUser, {
-    //     displayName: name
-    //   })
-    //   const user = userCredential.user
-    //   console.log(user);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      const auth = getAuth();
+      // await 뒤에는 Promise()
+      // Promise()는 성공,실패 여부를 아는 데 시간이 걸린다.
+      // 만약 실패하면 error를 catch로 반환한다.
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      
+      await updateProfile(auth.currentUser, {
+        displayName: name
+      });      
+      const user = userCredential.user;
+      
+      const formDataCopy = {...formData};
+      delete formDataCopy.password;
+      formDataCopy.timestamp = serverTimestamp();
+      
+      await setDoc(doc(db, 'users', user.uid), formDataCopy);
+      toast.success('Sign up was successful.');
+      // navigate('/');
+      
+    } catch (error) {
+        toast.error("Something went wrong with the registration");
+    }
   }
+
+
+  // async function onSubmit(e) {
+  //   e.preventDefault();
+
+  //   try {
+  //     const auth = getAuth();
+  //     const userCredential = await createUserWithEmailAndPassword(
+  //       auth,
+  //       email,
+  //       password
+  //     );
+
+  //     updateProfile(auth.currentUser, {
+  //       displayName: name,
+  //     });
+  //     const user = userCredential.user;
+  //     const formDataCopy = { ...formData };
+  //     delete formDataCopy.password;
+  //     formDataCopy.timestamp = serverTimestamp();
+
+  //     await setDoc(doc(db, "users", user.uid), formDataCopy);
+  //     toast.success("Sign up was successful");
+  //     // navigate("/");
+  //   } catch (error) {
+  //     toast.error("Something went wrong with the registration");
+  //   }
+  // }
 
   return (
     <section>
